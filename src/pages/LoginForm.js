@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Image } from "react-native";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Pour stocker le token
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginForm = ({ navigation }) => {
     const [formData, setFormData] = useState({
@@ -28,7 +28,6 @@ const LoginForm = ({ navigation }) => {
                 password: formData.password,
             });
 
-            // Stocker le token
             await AsyncStorage.setItem("token", response.data.token);
             await AsyncStorage.setItem("email", response.data.email);
 
@@ -45,45 +44,66 @@ const LoginForm = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
+        <ImageBackground source={require("../../assets/background-login.jpeg")}
+            style={styles.background}
+            blurRadius={5}>
+            <View style={styles.container}>
 
-            <TextInput
-                style={styles.input}
-                placeholder="E-mail"
-                value={formData.email}
-                onChangeText={(text) => handleInputChange("email", text)}
-                keyboardType="email-address"
-            />
-            <View style={styles.passwordContainer}>
+                <Image source={require("../../assets/logo.jpeg")} style={styles.logo} />
+                <Text style={styles.title}>Kolekta</Text>
+
                 <TextInput
                     style={styles.input}
-                    placeholder="Mot de passe"
-                    secureTextEntry={!showPassword}
-                    value={formData.password}
-                    onChangeText={(text) => handleInputChange("password", text)}
+                    placeholder="E-mail"
+                    value={formData.email}
+                    onChangeText={(text) => handleInputChange("email", text)}
+                    keyboardType="email-address"
                 />
-                <TouchableOpacity onPress={toggleShowPassword} style={styles.eyeIcon}>
-                    <Text>{showPassword ? "👁️" : "👁️‍🗨️"}</Text>
+                <View style={styles.passwordContainer}>
+                    <TextInput
+                        style={styles.passwordInput}
+                        placeholder="Mot de passe"
+                        secureTextEntry={!showPassword}
+                        value={formData.password}
+                        onChangeText={(text) => handleInputChange("password", text)}
+                    />
+                    <TouchableOpacity onPress={toggleShowPassword} style={styles.eyeIcon}>
+                        <Text>{showPassword ? "👁️" : "👁️‍🗨️"}</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {error ? <Text style={styles.error}>{error}</Text> : null}
+
+                <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                    <Text style={styles.buttonText}>SE CONNECTER</Text>
                 </TouchableOpacity>
             </View>
-
-            {error ? <Text style={styles.error}>{error}</Text> : null}
-
-            <Button title="SE CONNECTER" onPress={handleSubmit} />
-
-            <TouchableOpacity onPress={() => navigation.navigate("Signup")} style={styles.signupLink}>
-                {/* <Text style={styles.signupText}>Pas encore de compte ? S'inscrire</Text> */}
-            </TouchableOpacity>
-        </View>
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    background: {
         flex: 1,
+        resizeMode: "cover",
         justifyContent: "center",
+    },
+    logo: {
+        width: 100,
+        height: 100,
+        alignSelf: "center", // Centre l'image horizontalement
+        borderRadius: 10,
+        marginBottom: 20,
+    },
+    container: {
         padding: 20,
+        backgroundColor: "rgba(255, 255, 255, 0.5)",
+        margin: 20,
+        borderRadius: 10,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
     },
     title: {
         fontSize: 24,
@@ -99,25 +119,36 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     passwordContainer: {
-        position: "relative",
+        flexDirection: "row",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 5,
+        paddingHorizontal: 10,
         marginBottom: 15,
     },
+    passwordInput: {
+        flex: 1, // Prend tout l'espace disponible
+        paddingVertical: 10,
+    },
     eyeIcon: {
-        position: "absolute",
-        right: 10,
-        top: 10,
+        marginLeft: 10,
     },
     error: {
         color: "red",
         marginBottom: 15,
         textAlign: "center",
     },
-    signupLink: {
-        marginTop: 20,
+    button: {
+        backgroundColor: "#007bff",
+        padding: 15,
+        borderRadius: 5,
         alignItems: "center",
     },
-    signupText: {
-        color: "#0000FF",
+    buttonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
     },
 });
 

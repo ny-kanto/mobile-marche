@@ -13,8 +13,8 @@ export default function App() {
     //   <StatusBar style="auto" />
     // </View>
     <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Navigator initialRouteName="Login">
+          {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="Login" component={LoginForm} />
         </Stack.Navigator>

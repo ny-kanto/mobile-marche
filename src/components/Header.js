@@ -3,9 +3,14 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from "react-na
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Menu, Divider, Provider, Button, IconButton } from "react-native-paper";
 
 const Header = () => {
     const navigation = useNavigation();
+    const [visible, setVisible] = useState(false);
+
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
     const [personne, setPersonne] = useState({
         id: '',
         nom: '',
@@ -71,21 +76,36 @@ const Header = () => {
     };
 
     return (
-        <View style={styles.header}>
-            <View style={styles.logoContainer}>
-                <Image source={require('../../assets/logo.jpeg')} style={styles.logo} />
-                <Text style={styles.appName}>Kolekta</Text>
+        <Provider>
+            <View style={styles.header}>
+                <View style={styles.logoContainer}>
+                    <Image source={require('../../assets/logo.jpeg')} style={styles.logo} />
+                    <Text style={styles.appName}>Kolekta</Text>
+                </View>
+
+                <Menu
+                    visible={visible}
+                    onDismiss={closeMenu}
+                    anchor={
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <IconButton
+                                icon="account-circle"
+                                size={30}
+                                color="black"
+                                onPress={openMenu}
+                            />
+                        </View>
+                    }
+                    contentStyle={{ top: -80 }}
+                    anchorPosition="top"
+                >
+                    <Menu.Item title={`${personne.prenom} ${personne.nom}`} />
+                    {/* <Divider /> */}
+                    <Menu.Item title="Déconnexion" onPress={handleLogout} />
+                </Menu>
+
             </View>
-
-            <TouchableOpacity style={styles.profile}>
-                <Text style={styles.profileText}>{personne.prenom} {personne.nom}</Text>
-                <Text style={styles.roleText}>{personne.role.nom}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.logout} onPress={handleLogout}>
-                <Text style={styles.logoutText}>Déconnexion</Text>
-            </TouchableOpacity>
-        </View>
+        </Provider>
     );
 };
 
@@ -107,7 +127,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     appName: {
-        color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
         marginLeft: 5,
@@ -120,24 +139,23 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
     },
-    profile: {
-        alignItems: 'flex-end',
-    },
-    profileText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-    roleText: {
-        color: '#ddd',
-        fontSize: 12,
-    },
-    logout: {
-        paddingHorizontal: 10,
-    },
-    logoutText: {
-        color: '#ff4444',
-        fontSize: 14,
-    },
+    // profile: {
+    //     alignItems: 'flex-end',
+    // },
+    // profileText: {
+    //     fontSize: 16,
+    // },
+    // roleText: {
+    //     color: '#ccc',
+    //     fontSize: 12,
+    // },
+    // logout: {
+    //     paddingHorizontal: 10,
+    // },
+    // logoutText: {
+    //     color: '#ff4444',
+    //     fontSize: 14,
+    // },
 });
 
 export default Header;

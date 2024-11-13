@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { View, TextInput, Button, StyleSheet, Text, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Header from "../components/Header";
+import { ScrollView } from "react-native";
 
 export default function PaymentScreen() {
   const [transID, setTransID] = useState("");
@@ -118,47 +119,50 @@ export default function PaymentScreen() {
   return (
     <View style={styles.container}>
       <Header />
-      <Text style={styles.labelAdresse}>Adresse de livraison</Text>
-      <TextInput
-        style={styles.inputAdresse}
-        placeholder="Entrez l'adresse de livraison"
-        value={adresse}
-        onChangeText={setAdresse}
-      />
-      <Text style={styles.labelPanier}>Détails du Panier</Text>
-      <View style={styles.table}>
-        <View style={styles.tableHeader}>
-          <Text style={styles.tableHeaderCell}>Produit</Text>
-          <Text style={styles.tableHeaderCell}>P U (Ar)</Text>
-          <Text style={styles.tableHeaderCell}>Quantité</Text>
-          <Text style={styles.tableHeaderCell}>Total (Ar)</Text>
+
+      <ScrollView style={styles.scrollContent}>
+        <Text style={styles.labelAdresse}>Adresse de livraison</Text>
+        <TextInput
+          style={styles.inputAdresse}
+          placeholder="Entrez l'adresse de livraison"
+          value={adresse}
+          onChangeText={setAdresse}
+        />
+        <Text style={styles.labelPanier}>Détails du Panier</Text>
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.tableHeaderCell}>Produit</Text>
+            <Text style={styles.tableHeaderCell}>P U (Ar)</Text>
+            <Text style={styles.tableHeaderCell}>Quantité</Text>
+            <Text style={styles.tableHeaderCell}>Total (Ar)</Text>
+          </View>
+
+          {orders.map((order, index) => (
+            <View key={index} style={styles.tableRow}>
+              <View style={styles.tableCell}>
+                <Text style={styles.productName}>{order.nom_produit}</Text>
+                <Text style={styles.sellerName}>{order.prenom_vendeur} {order.nom_vendeur}</Text>
+              </View>
+              <Text style={styles.tableCell}>{order.prix_produit?.toLocaleString("fr-FR")}</Text>
+              <Text style={styles.tableCell}>{order.quantite?.toLocaleString("fr-FR")}</Text>
+              <Text style={styles.tableCell}>{order.total?.toLocaleString("fr-FR")}</Text>
+            </View>
+          ))}
         </View>
 
-        {orders.map((order, index) => (
-          <View key={index} style={styles.tableRow}>
-            <View style={styles.tableCell}>
-              <Text style={styles.productName}>{order.nom_produit}</Text>
-              <Text style={styles.sellerName}>{order.prenom_vendeur} {order.nom_vendeur}</Text>
-            </View>
-            <Text style={styles.tableCell}>{order.prix_produit?.toLocaleString("fr-FR")}</Text>
-            <Text style={styles.tableCell}>{order.quantite?.toLocaleString("fr-FR")}</Text>
-            <Text style={styles.tableCell}>{order.total?.toLocaleString("fr-FR")}</Text>
-          </View>
-        ))}
-      </View>
-
-      <View style={styles.totals}>
-        <Text>Sous-total : {total.toLocaleString("fr-FR")} Ar</Text>
-        <Text>TVA : {tva.toLocaleString("fr-FR")} Ar</Text>
-        <Text>Total TTC : {ttc.toLocaleString("fr-FR")} Ar</Text>
-      </View>
-      <Text style={styles.labelReference}>Référence de paiement</Text>
-      <TextInput
-        style={styles.inputReference}
-        placeholder="Entrez la référence de paiement"
-        value={transID}
-        onChangeText={setTransID}
-      />
+        <View style={styles.totals}>
+          <Text>Sous-total : {total.toLocaleString("fr-FR")} Ar</Text>
+          <Text>TVA : {tva.toLocaleString("fr-FR")} Ar</Text>
+          <Text>Total TTC : {ttc.toLocaleString("fr-FR")} Ar</Text>
+        </View>
+        <Text style={styles.labelReference}>Référence de paiement</Text>
+        <TextInput
+          style={styles.inputReference}
+          placeholder="Entrez la référence de paiement"
+          value={transID}
+          onChangeText={setTransID}
+        />
+      </ScrollView>
       <Button title="Confirmer le paiement" onPress={handlePaiement} />
     </View>
   );
@@ -168,6 +172,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#f9f9f9",
+  },
+  scrollContent: {
+    marginTop: 115
   },
   labelReference: {
     fontSize: 18,
